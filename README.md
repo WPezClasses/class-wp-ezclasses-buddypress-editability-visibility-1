@@ -22,3 +22,8 @@ BuddyPress' Per-Member Visibility setting continues to function as usual.
 Note: Also added was a Co-Groups visibility. That is, do the (logged in) visitor to the profile page's user have a group(s) in common. For large communities this could be used as a backdoor for stalking. That is, the stalker only need to be approved to join a group the stalkee is in. In most cases the stalkee might not have control over who gets into his / her groups.
 
 That said, for smaller communities Co-Groups might not be a bad visibility option to have. 
+
+
+#### Profile Demo
+
+Open the buddypress/ folder (within the repo) and drill down to the bottom to see examples of how the members / single / profile / edit.php and profile-loop.php templates need to be changed in order to utilze Editability and Visibility.
