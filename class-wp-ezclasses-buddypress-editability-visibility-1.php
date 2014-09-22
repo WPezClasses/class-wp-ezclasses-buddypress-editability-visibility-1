@@ -10,22 +10,29 @@
  *
  * @package WPezClasses
  * @author Mark Simchock <mark.simchock@alchemyunited.com>
- * @since 0.5.0
+ * @since 0.5.1
  * @license TODO
  */
  
 /**
  * == Change Log == 
  *
+ * 0.5.1 - 18 Sept 2014 - ADDED bp_is_active( ) checks for 'friends' and 'groups'
+ *
  */
  
 /**
  * == TODOs ==
  *
- * http://codex.buddypress.org/developer/bp-is-active/
+ * Check for bp_is_active( 'xprofile' ) ?? http://codex.buddypress.org/developer/bp-is-active/
  */
-
-
+ 
+// No WP? Die! Now!!
+if (!defined('ABSPATH')) {
+	header( 'HTTP/1.0 403 Forbidden' );
+    die();
+}
+ 
 if (! class_exists('Class_WP_ezClasses_BuddyPress_Editability_Visibility_1') ) {
   class Class_WP_ezClasses_BuddyPress_Editability_Visibility_1 {
   
@@ -303,24 +310,26 @@ if (! class_exists('Class_WP_ezClasses_BuddyPress_Editability_Visibility_1') ) {
 		return $arr_visitor_is;
 	  }
 	  
-	  // TODO check to make sure friends component is turned on
-	  if ( friends_check_friendship( $int_displayed_user_id, $int_loggedin_user_id ) ){
-	    $arr_visitor_is['friends'] = true;
+	  if ( bp_is_active( 'friends' ) ){
+	    if ( friends_check_friendship( $int_displayed_user_id, $int_loggedin_user_id ) ){
+	      $arr_visitor_is['friends'] = true;
+	    }
 	  }
 	  
-	  //TODO check to make sure groups component is turned on
 	  
-	  // does the current (loggedin) visitor share any groups with the profile'd person?
-	  if ( $int_loggedin_user_id != $int_displayed_user_id ){
-	    $arr_displayed_user_id_groups = BP_Groups_Member::get_group_ids( $int_displayed_user_id);
-		$arr_loggedin_user_id_groups = BP_Groups_Member::get_group_ids( $int_loggedin_user_id);
+	  if ( bp_is_active( 'groups' ) ){
+	    // does the current (loggedin) visitor share any groups with the profile'd person?
+	    if ( $int_loggedin_user_id != $int_displayed_user_id ){
+	      $arr_displayed_user_id_groups = BP_Groups_Member::get_group_ids( $int_displayed_user_id);
+		  $arr_loggedin_user_id_groups = BP_Groups_Member::get_group_ids( $int_loggedin_user_id);
 		
-		$arr_intersect_groups = array_intersect($arr_displayed_user_id_groups['groups'], $arr_loggedin_user_id_groups['groups']);
+		  $arr_intersect_groups = array_intersect($arr_displayed_user_id_groups['groups'], $arr_loggedin_user_id_groups['groups']);
 		
-		// intersect means the users have a group(s) in common
-		if ( ! empty($arr_intersect_groups) ){
-		  $arr_visitor_is['groups'] = true;
-		} 
+		  // intersect means the users have a group(s) in common
+		  if ( ! empty($arr_intersect_groups) ){
+		    $arr_visitor_is['groups'] = true;
+		  } 
+	  }
 	  }
 	  	  
 	  return $arr_visitor_is;
