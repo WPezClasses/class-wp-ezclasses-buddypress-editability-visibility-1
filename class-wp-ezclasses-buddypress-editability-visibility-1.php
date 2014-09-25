@@ -61,13 +61,13 @@ if (! class_exists('Class_WP_ezClasses_BuddyPress_Editability_Visibility_1') ) {
 	  $arr_defaults = array(
 	    'key_delimiter'				=> '_',									// underscore is probably best but if you have other ideas then this is easy to change
 		'remap'						=> array('public' => 'user_public'),	// which default BP visibility values would you like to remap? 
-		'failsafe_edit'				=> 'TODOedit',
-		'failsafe_visible'			=> 'TODOvis',
+		'failsafe_edit'				=> 'hr',								// if all else fails (i.e., edit setting is not longer active), who can edit a field
+		'failsafe_visible'			=> 'userplus',							// if all else fails, who can view the field
 		
 	    'hr_wp_capability'			=> 'edit_published_posts',				// wp author
 		'owner_wp_capability'		=> 'moderate_comments',					// wp editor
 		'admin_wp_capability'		=> 'delete_plugins',					// wp admin
-		'super_wp_capability'		=> 'TODO',								// wp ms super admin TODO
+		'super_wp_capability'		=> 'manage_network',								// wp ms super admin TODO
 		
 		'use_label_short'			=> array('user' => true),				// which edit / user_is level(s) sees the label_short (as defined below)
 		'use_label_short_prefix' 	=> 'Visible to: ',						// TODO - REMOVE?? 
@@ -110,6 +110,11 @@ if (! class_exists('Class_WP_ezClasses_BuddyPress_Editability_Visibility_1') ) {
 		  'label_short' 	=> 'Only User Sees',		  
 		  ),
 		  
+	    'user_userplus' => array(
+		  'label' 			=> 'User Edit: User, HR & Owner Sees',
+		  'label_short' 	=> 'User, HR & Owner Sees',		  
+		  ),
+		  
 	    'user_hr' 		=> array(
 		  'label' 			=> 'User Edit: Only HR Sees',
 		  'label_short' 	=> 'Only HR Sees',		  
@@ -144,6 +149,11 @@ if (! class_exists('Class_WP_ezClasses_BuddyPress_Editability_Visibility_1') ) {
 		  'label'			=> 'HR Edit: Only User Sees',
 		  'label_short'		=> 'HR Edit: Only User Sees',		  
 		  ),
+		  
+	    'hr_userplus' => array(
+		  'label' 			=> 'HR Edit: User, HR & Owner Sees',
+		  'label_short' 	=> 'HR Edit: User, HR & Owner Sees',		  
+		  ),		  
 		  
 	    'hr_hr' 		=> array(
 		  'label'			=> 'HR Edit: Only HR Sees',
@@ -187,6 +197,7 @@ if (! class_exists('Class_WP_ezClasses_BuddyPress_Editability_Visibility_1') ) {
 		'user_friends' 		=> true, 
 		'user_groups'		=> true, 
 		'user_user'			=> true,
+		'user_userplus'		=> true,
 		'user_hr'			=> true,
 		'user_owner'		=> true,
 		
@@ -195,6 +206,7 @@ if (! class_exists('Class_WP_ezClasses_BuddyPress_Editability_Visibility_1') ) {
 		'hr_friends'		=> true, 
 		'hr_groups'			=> true,
 		'hr_user'			=> true,
+		'hr_userplus'		=> true,		
 		'hr_hr'				=> true,
 		'hr_owner'			=> true,
 		
@@ -350,6 +362,7 @@ if (! class_exists('Class_WP_ezClasses_BuddyPress_Editability_Visibility_1') ) {
 // TODO - remove...lets pretend the current loggedin user is hr	  
 if (true){
   $arr_visitor_is_custom['hr'] = true;
+  $arr_visitor_is_custom['owner'] = true;
 }
 	  
 	  // the admin is his / her own special entity  and is not considered a "lower" role (as is often traditional WP)
@@ -383,6 +396,13 @@ if (true){
 	    $arr_visitor_visibility_permissions['friends'] = true;
 		$arr_visitor_visibility_permissions['groups'] = true;
 	  }
+	  
+	  if ( ( isset($arr_visitor_visibility_permissions['user']) && $arr_visitor_visibility_permissions['user'] === true )
+		|| ( isset($arr_visitor_visibility_permissions['hr']) && $arr_visitor_visibility_permissions['hr'] === true )
+		|| ( isset($arr_visitor_visibility_permissions['owner']) && $arr_visitor_visibility_permissions['owner'] === true ) ){
+	    $arr_visitor_visibility_permissions['userplus'] = true;
+	  }
+	  
 	  return $arr_visitor_visibility_permissions;
 	}
 	
